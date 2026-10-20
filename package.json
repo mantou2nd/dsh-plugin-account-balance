@@ -1,0 +1,48 @@
+{
+  "name": "dsh-plugin-account-balance",
+  "version": "1.0.0",
+  "description": "Adds an account-balance pill to the DSH conversation composer dock: wallet balance, this session's spend, and this turn's estimated spend. Click it for the breakdown.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "balance",
+    "usage",
+    "deepseek"
+  ],
+  "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-api-remotes",
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ]
+    }
+  },
+  "author": "hyj",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hyj/dsh-plugin-account-balance.git"
+  },
+  "homepage": "https://github.com/hyj/dsh-plugin-account-balance#readme",
+  "bugs": {
+    "url": "https://github.com/hyj/dsh-plugin-account-balance/issues"
+  }
+}

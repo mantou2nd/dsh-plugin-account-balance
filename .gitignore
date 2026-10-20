@@ -1,0 +1,4 @@
+node_modules/
+*.tgz
+.mock/
+.DS_Store

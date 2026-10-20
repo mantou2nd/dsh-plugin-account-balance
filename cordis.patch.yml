@@ -1,0 +1,4 @@
+# dsh bundle layer: mount the account-balance pill next to the composer dock.
+- insert:
+    - id: ui-account-balance
+      name: 'dsh-plugin-account-balance'
