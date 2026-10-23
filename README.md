@@ -22,6 +22,8 @@
 
 ### 方式一：插件页
 
+仓库地址：<https://github.com/mantou2nd/dsh-plugin-account-balance>（发版后 Releases 里也有打包好的 `.tgz`）。
+
 1. 下载 `dsh-plugin-account-balance-1.0.0.tgz`（或直接 `git clone` 本仓库）。
 2. DSH → 侧栏 **插件** → **添加插件** → 选这个包 / 本地目录。
 3. 安装完成后点 **立即启用**，刷新一次窗口。

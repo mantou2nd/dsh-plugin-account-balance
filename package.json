@@ -39,10 +39,10 @@
   "author": "hyj",
   "repository": {
     "type": "git",
-    "url": "https://github.com/hyj/dsh-plugin-account-balance.git"
+    "url": "https://github.com/mantou2nd/dsh-plugin-account-balance.git"
   },
-  "homepage": "https://github.com/hyj/dsh-plugin-account-balance#readme",
+  "homepage": "https://github.com/mantou2nd/dsh-plugin-account-balance#readme",
   "bugs": {
-    "url": "https://github.com/hyj/dsh-plugin-account-balance/issues"
+    "url": "https://github.com/mantou2nd/dsh-plugin-account-balance/issues"
   }
 }
