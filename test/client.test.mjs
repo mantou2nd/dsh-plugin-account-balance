@@ -112,10 +112,17 @@ const exports = sandbox.loaded.factory((name) => {
 })
 if (typeof exports.apply !== 'function') throw new Error('missing apply')
 
-const { summarize, formatCents, spendOf, latestTurn, compactTokens } = exports.__helpers
+const { summarize, formatCents, toCents, spendOf, latestTurn, compactTokens } = exports.__helpers
 const rows = summarize({ status: 'ready', value: [{ currency: 'CNY', balance: '62.10' }], bonusWallets: [{ currency: 'CNY', balance: '2.28' }] })
 if (rows.length !== 1 || rows[0].total !== 6438) throw new Error('summarize wrong: ' + JSON.stringify(rows))
 if (formatCents(6438, '¥') !== '¥64.38') throw new Error('format wrong')
+if (toCents('61.395') !== 6139) throw new Error('sub-cent must truncate: ' + toCents('61.395'))
+if (toCents('61.399') !== 6139) throw new Error('sub-cent must truncate: ' + toCents('61.399'))
+if (toCents('61.4') !== 6140) throw new Error('one decimal: ' + toCents('61.4'))
+if (toCents('61') !== 6100) throw new Error('integer: ' + toCents('61'))
+if (toCents('0.009') !== 0) throw new Error('under a cent: ' + toCents('0.009'))
+const truncating = summarize({ status: 'ready', value: [{ currency: 'CNY', balance: '61.395' }], bonusWallets: [{ currency: 'CNY', balance: '2.285' }] })
+if (truncating[0].total !== 6367) throw new Error('wallet total must truncate per part: ' + JSON.stringify(truncating))
 if (spendOf([{ currency: 'CNY', total: 6301 }], { CNY: 6438 })[0].cents !== 137) throw new Error('spendOf wrong')
 if (compactTokens(12_400_000) !== '12M') throw new Error('compact big')
 
