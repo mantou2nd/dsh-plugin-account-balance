@@ -112,7 +112,7 @@ const exports = sandbox.loaded.factory((name) => {
 })
 if (typeof exports.apply !== 'function') throw new Error('missing apply')
 
-const { summarize, formatCents, toCents, spendOf, latestTurn, compactTokens } = exports.__helpers
+const { summarize, formatCents, toCents, spendOf, latestTurn, compactTokens, dayKey, accumulateDay } = exports.__helpers
 const rows = summarize({ status: 'ready', value: [{ currency: 'CNY', balance: '62.10' }], bonusWallets: [{ currency: 'CNY', balance: '2.28' }] })
 if (rows.length !== 1 || rows[0].total !== 6438) throw new Error('summarize wrong: ' + JSON.stringify(rows))
 if (formatCents(6438, '¥') !== '¥64.38') throw new Error('format wrong')
@@ -125,6 +125,22 @@ const truncating = summarize({ status: 'ready', value: [{ currency: 'CNY', balan
 if (truncating[0].total !== 6367) throw new Error('wallet total must truncate per part: ' + JSON.stringify(truncating))
 if (spendOf([{ currency: 'CNY', total: 6301 }], { CNY: 6438 })[0].cents !== 137) throw new Error('spendOf wrong')
 if (compactTokens(12_400_000) !== '12M') throw new Error('compact big')
+
+if (dayKey(new Date(2026, 9, 26, 10, 0, 0)) !== '2026-10-26') throw new Error('dayKey wrong')
+
+storage.removeItem('dsh-account-balance.day')
+const morning = new Date(2026, 9, 26, 10, 0, 0)
+const noSpend = accumulateDay([{ currency: 'CNY', total: 10000 }], morning)
+if (noSpend.CNY !== 0) throw new Error('first observation must start at zero: ' + noSpend.CNY)
+const afterDrop = accumulateDay([{ currency: 'CNY', total: 9950 }], new Date(2026, 9, 26, 10, 1, 0))
+if (afterDrop.CNY !== 50) throw new Error('drop must accumulate: ' + afterDrop.CNY)
+const afterTopUp = accumulateDay([{ currency: 'CNY', total: 20000 }], new Date(2026, 9, 26, 10, 2, 0))
+if (afterTopUp.CNY !== 50) throw new Error('top-up must not erase the day: ' + afterTopUp.CNY)
+const afterSecondDrop = accumulateDay([{ currency: 'CNY', total: 19900 }], new Date(2026, 9, 26, 10, 3, 0))
+if (afterSecondDrop.CNY !== 150) throw new Error('drops after a top-up must count: ' + afterSecondDrop.CNY)
+const nextDay = accumulateDay([{ currency: 'CNY', total: 19800 }], new Date(2026, 9, 27, 0, 5, 0))
+if (nextDay.CNY !== 0) throw new Error('a new day must reset: ' + nextDay.CNY)
+storage.removeItem('dsh-account-balance.day')
 
 const reading = latestTurn([
   { kind: 'assistant', turn: 1, usage: { totalTokens: 1000 } },
@@ -212,7 +228,7 @@ if (first.text !== '余额 ¥64.38·会话 ¥0.00') throw new Error('trigger tex
 const panelEl = await openPanel(first, first.props)
 if (panelEl === null || panelEl.props.role !== 'dialog') throw new Error('panel did not open')
 const panelText = text(panelEl)
-for (const expected of ['账户余额', '¥64.38', '充值余额', '赠金余额', '会话消耗', '自打开这个会话起余额的减少', '刷新', '查询用量', '去充值']) {
+for (const expected of ['账户余额', '¥64.38', '充值余额', '赠金余额', '会话消耗', '今日消耗', '自打开这个会话起余额的减少', '今天累计的余额减少', '刷新', '查询用量', '去充值']) {
   if (!panelText.includes(expected)) throw new Error('panel missing ' + expected + ' in: ' + panelText)
 }
 
