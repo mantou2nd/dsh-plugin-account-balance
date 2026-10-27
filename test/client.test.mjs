@@ -131,15 +131,17 @@ if (dayKey(new Date(2026, 9, 26, 10, 0, 0)) !== '2026-10-26') throw new Error('d
 storage.removeItem('dsh-account-balance.day')
 const morning = new Date(2026, 9, 26, 10, 0, 0)
 const noSpend = accumulateDay([{ currency: 'CNY', total: 10000 }], morning)
-if (noSpend.CNY !== 0) throw new Error('first observation must start at zero: ' + noSpend.CNY)
+if (noSpend.spent.CNY !== 0) throw new Error('first observation must start at zero: ' + noSpend.spent.CNY)
+if (noSpend.since !== morning.getTime()) throw new Error('since must record the first observation: ' + noSpend.since)
 const afterDrop = accumulateDay([{ currency: 'CNY', total: 9950 }], new Date(2026, 9, 26, 10, 1, 0))
-if (afterDrop.CNY !== 50) throw new Error('drop must accumulate: ' + afterDrop.CNY)
+if (afterDrop.spent.CNY !== 50) throw new Error('drop must accumulate: ' + afterDrop.spent.CNY)
+if (afterDrop.since !== morning.getTime()) throw new Error('since must stay at the first observation')
 const afterTopUp = accumulateDay([{ currency: 'CNY', total: 20000 }], new Date(2026, 9, 26, 10, 2, 0))
-if (afterTopUp.CNY !== 50) throw new Error('top-up must not erase the day: ' + afterTopUp.CNY)
+if (afterTopUp.spent.CNY !== 50) throw new Error('top-up must not erase the day: ' + afterTopUp.spent.CNY)
 const afterSecondDrop = accumulateDay([{ currency: 'CNY', total: 19900 }], new Date(2026, 9, 26, 10, 3, 0))
-if (afterSecondDrop.CNY !== 150) throw new Error('drops after a top-up must count: ' + afterSecondDrop.CNY)
+if (afterSecondDrop.spent.CNY !== 150) throw new Error('drops after a top-up must count: ' + afterSecondDrop.spent.CNY)
 const nextDay = accumulateDay([{ currency: 'CNY', total: 19800 }], new Date(2026, 9, 27, 0, 5, 0))
-if (nextDay.CNY !== 0) throw new Error('a new day must reset: ' + nextDay.CNY)
+if (nextDay.spent.CNY !== 0) throw new Error('a new day must reset: ' + nextDay.spent.CNY)
 storage.removeItem('dsh-account-balance.day')
 
 const reading = latestTurn([
@@ -228,7 +230,7 @@ if (first.text !== '余额 ¥64.38·会话 ¥0.00') throw new Error('trigger tex
 const panelEl = await openPanel(first, first.props)
 if (panelEl === null || panelEl.props.role !== 'dialog') throw new Error('panel did not open')
 const panelText = text(panelEl)
-for (const expected of ['账户余额', '¥64.38', '充值余额', '赠金余额', '会话消耗', '今日消耗', '自打开这个会话起余额的减少', '今天累计的余额减少', '刷新', '查询用量', '去充值']) {
+for (const expected of ['账户余额', '¥64.38', '充值余额', '赠金余额', '会话消耗', '今日消耗', '自打开这个会话起余额的减少', '刷新', '查询用量', '去充值']) {
   if (!panelText.includes(expected)) throw new Error('panel missing ' + expected + ' in: ' + panelText)
 }
 
