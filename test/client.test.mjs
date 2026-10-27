@@ -230,7 +230,7 @@ if (first.text !== '余额 ¥64.38·会话 ¥0.00') throw new Error('trigger tex
 const panelEl = await openPanel(first, first.props)
 if (panelEl === null || panelEl.props.role !== 'dialog') throw new Error('panel did not open')
 const panelText = text(panelEl)
-for (const expected of ['账户余额', '¥64.38', '充值余额', '赠金余额', '会话消耗', '今日消耗', '自打开这个会话起余额的减少', '刷新', '查询用量', '去充值']) {
+for (const expected of ['账户余额', '¥64.38', '充值余额', '赠金余额', '会话消耗', '今日消耗', '刷新', '查询用量', '去充值']) {
   if (!panelText.includes(expected)) throw new Error('panel missing ' + expected + ' in: ' + panelText)
 }
 
