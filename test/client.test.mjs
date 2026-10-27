@@ -245,7 +245,7 @@ const second = await mount('second', 'session-1')
 if (second.text !== '余额 ¥63.63·会话 ¥0.75·本轮 ¥0.56') throw new Error('spend text: ' + second.text)
 const secondPanelEl = await openPanel(second, second.props)
 const secondPanel = text(secondPanelEl)
-if (!secondPanel.includes('¥0.75') || !secondPanel.includes('¥0.56') || !secondPanel.includes('3K tok · 占会话 75%')) {
+if (!secondPanel.includes('¥0.75') || !secondPanel.includes('¥0.56') || !secondPanel.includes('3K tok · 占会话 75% · 均价 ¥187.50/M')) {
   throw new Error('panel numbers: ' + secondPanel)
 }
 
